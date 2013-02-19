@@ -1,0 +1,11 @@
+.hg
+.hgignore
+.hgsub
+.hgsubstate
+auto-save-list
+image-dired
+*~
+session.*
+tramp
+ac-comphist.dat
+eproject.lst
