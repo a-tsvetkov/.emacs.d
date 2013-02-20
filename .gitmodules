@@ -36,3 +36,9 @@
 [submodule "modules/magit"]
 	path = modules/magit
 	url = git@github.com:magit/magit.git
+[submodule "modules/yasnippet"]
+	path = modules/yasnippet
+	url = git://github.com/capitaomorte/yasnippet.git
+[submodule "modules/nxhtml"]
+	path = modules/nxhtml
+	url = https://github.com/emacsmirror/nxhtml.git
