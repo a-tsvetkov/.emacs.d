@@ -10,3 +10,4 @@ tramp
 ac-comphist.dat
 eproject.lst
 #*
+*.log

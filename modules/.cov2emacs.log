@@ -18,3 +18,13 @@ DEBUG:root:Potential: /home/.coverage
 DEBUG:root:No file: /home/.coverage
 DEBUG:root:Potential: /.coverage
 DEBUG:root:No file: /.coverage
+DEBUG:root:Potential: /home/venya/.emacs.d/modules/.coverage
+DEBUG:root:No file: /home/venya/.emacs.d/modules/.coverage
+DEBUG:root:Potential: /home/venya/.emacs.d/.coverage
+DEBUG:root:No file: /home/venya/.emacs.d/.coverage
+DEBUG:root:Potential: /home/venya/.coverage
+DEBUG:root:No file: /home/venya/.coverage
+DEBUG:root:Potential: /home/.coverage
+DEBUG:root:No file: /home/.coverage
+DEBUG:root:Potential: /.coverage
+DEBUG:root:No file: /.coverage

@@ -146,6 +146,7 @@
   '(progn
      (color-theme-initialize)
      (color-theme-solarized-dark)))
+
 ;; linum teaks
 (require 'linum-off)
 (add-hook 'linum-before-numbering-hook (lambda() (setq linum-format (lambda (line) (propertize (format (let ((w (length (number-to-string (count-lines (point-min) (point-max)))))) (concat " %" (number-to-string w) "d ")) line) 'face 'linum)))))
