@@ -105,11 +105,10 @@
 (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
 
 
-;; initiate yasnippet
-(require 'yasnippet) ;; not yasnippet-bundle
-(yas/initialize)
-(yas/load-directory (concat modules-path "yasnippet/snippets/"))
-
+;; Yasnippet initialize in emacs-for-python
+;; (add-to-list 'load-path (concat modules-path "yasnippet"))
+;; (require 'yasnippet)
+;; (yas-global-mode 1)
 
 ;; load magit
 (require 'magit)
