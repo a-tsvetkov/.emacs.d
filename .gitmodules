@@ -33,3 +33,6 @@
 [submodule "zenburn-emacs"]
       path = modules/zenburn-emacs
       url = git://github.com/bbatsov/zenburn-emacs.git
+[submodule "modules/magit"]
+	path = modules/magit
+	url = git@github.com:magit/magit.git
