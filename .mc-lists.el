@@ -14,6 +14,7 @@
 	python-indent-dedent-line-backspace
 	python-indent-electric-colon
 	python-indent-shift-left
+	rope-code-assist
 	skeleton-pair-insert-maybe
 	toggle-input-method
 	yas/expand
@@ -23,6 +24,7 @@
       '(
 	end-of-buffer
 	ido-insert-file
+	ido-switch-buffer
 	mark-page
 	mark-sexp
 	mouse-save-then-kill

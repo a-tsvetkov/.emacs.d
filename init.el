@@ -119,6 +119,7 @@
 ;; load magithub
 (add-to-list 'load-path (concat modules-path "magihub"))
 (require 'magithub)
+(global-set-key (kbd "C-x C-g") 'magit-status)
 
 (add-to-list 'load-path (concat modules-path "multiple-cursors.el"))
 ;; Multiple cursors configuration
@@ -135,6 +136,7 @@
 (add-to-list 'load-path (concat modules-path "expand-region.el"))
 (require 'expand-region)
 (global-set-key (kbd "C-=") 'er/expand-region)
+(global-set-key (kbd "C--") 'er/contract-region)
 
 ;; load pg
 (require 'pg)
@@ -209,15 +211,19 @@
 		      (linum-mode))))
 
 ;; Setup pony mode
-(add-to-list 'load-path (concat modules-path "pony-mode/src"))
-(require 'pony-mode)
+;; (add-to-list 'load-path (concat modules-path "pony-mode/src"))
+;; (require 'pony-mode)
+
+(add-to-list 'load-path (concat modules-path "python-django.el"))
+(require 'python-django)
+(global-set-key (kbd "C-x j") 'python-django-open-project)
 
 (custom-set-variables
   ;; custom-set-variables was added by Custom.
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
- '(ispell-highlight-p t))
+ '(ispell-highlight-p t)
 (custom-set-faces
   ;; custom-set-faces was added by Custom.
   ;; If you edit it by hand, you could mess it up, so be careful.

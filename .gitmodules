@@ -39,3 +39,6 @@
 [submodule "modules/nxhtml"]
 	path = modules/nxhtml
 	url = https://github.com/emacsmirror/nxhtml.git
+[submodule "modules/python-django.el"]
+	path = modules/python-django.el
+	url = git@github.com:fgallina/python-django.el.git
