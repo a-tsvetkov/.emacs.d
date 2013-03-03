@@ -1,6 +1,3 @@
-;; This .emacs file illustrates the minimul setup
-;; required to run the JDE.
-
 ;; Set the debug option to enable a backtrace when a
 ;; problem occurs.
 (setq debug-on-error nil)
@@ -36,7 +33,9 @@
     ;; use 120 char wide window for largeish displays
     ;; and smaller 80 column windows for smaller displays
     ;; pick whatever numbers make sense for you
-    (tool-bar-mode nil)
+    (tool-bar-mode -1)
+    (menu-bar-mode -1)
+    (scroll-bar-mode -1)
     (toggle-scroll-bar nil)
 
     (if (> (x-display-pixel-width) 1280)
@@ -224,10 +223,10 @@
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
  '(ispell-highlight-p t)
+)
 (custom-set-faces
   ;; custom-set-faces was added by Custom.
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
  )
-
