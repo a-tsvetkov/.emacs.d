@@ -85,19 +85,26 @@
 (add-to-list 'auto-mode-alist '("\\.module\\'" . php-mode))
 (add-to-list 'auto-mode-alist '("\\.inc\\'" . php-mode))
 
-(defun wicked/php-mode-init ()
-  "Set some buffer-local variables."
-  (setq case-fold-search t)
-  (setq indent-tabs-mode nil)
-  (setq fill-column 80)
-  (setq c-basic-offset 2)
-  (c-set-offset 'arglist-cont 0)
-  (c-set-offset 'arglist-intro '+)
-  (c-set-offset 'case-label 2)
-  (c-set-offset 'substatement-open 0)
-  (c-set-offset 'arglist-close 0))
-(add-hook 'php-mode-hook 'wicked/php-mode-init)
-(setq show-paren-mode t)
+;; (defun wicked/php-mode-init ()
+;;   "Set some buffer-local variables."
+;;   (setq case-fold-search t)
+;;   (c-set-offset 'arglist-cont 0)
+;;   (c-set-offset 'arglist-intro '+)
+;;   (setq show-paren-mode t)
+;;   (c-set-offset 'case-label 4)
+;;   (c-set-offset 'substatement-open 0)
+;;   (c-set-offset 'arglist-close 0))
+;; (add-hook 'php-mode-hook 'wicked/php-mode-init)
+
+;; fill column
+(setq fill-column 79)
+
+;; indent with spaces
+(setq-default indent-tabs-mode nil)
+(setq-default tab-width 4)
+
+;; nxml identation
+(setq nxml-child-indent 4)
 
 ;; miscelaneous tweaks
 (set-default 'truncate-lines t)
@@ -166,9 +173,11 @@
 (require 'python-pep8)
 (require 'python-pylint)
 
-(epy-setup-checker "pyflakes %f")
+;; (epy-setup-checker "pyflakes %f")
 ;; Uncomment to check with multiple checkers
-;; (epy-setup-checker (concat modules-path "lintrunner.py %f"))
+(epy-setup-checker (concat "python " modules-path "pycheckers.py %f"))
+
+
 (epy-django-snippets)
 (epy-setup-ipython)
 
@@ -216,6 +225,10 @@
 (add-to-list 'load-path (concat modules-path "python-django.el"))
 (require 'python-django)
 (global-set-key (kbd "C-x j") 'python-django-open-project)
+
+;; Comment spell checking
+;; (setq flyspell-issue-welcome-flag nil)
+;; (add-hook 'python-mode-hook 'flyspell-prog-mode)
 
 (custom-set-variables
   ;; custom-set-variables was added by Custom.
