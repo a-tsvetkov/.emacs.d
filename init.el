@@ -13,17 +13,16 @@
 (setq line-number-mode t)
 
 ;; Ненужные пробелы
-(setq show-trailing-whitespace t)
+;; (setq show-trailing-whitespace t)
 
 ;; unused lines
 (setq indicate-empty-lines t)
+
 
 (add-to-list 'load-path modules-path)
 (let ((default-directory modules-path))
       (normal-top-level-add-subdirs-to-load-path))
 
-;;delete trailing whitespaces before saving
-(add-hook 'before-save-hook 'delete-trailing-whitespace)
 
 ;; setup window if running with x
 (defun setup-x-window-frame ()
@@ -39,24 +38,24 @@
     (toggle-scroll-bar nil)
 
     (if (> (x-display-pixel-width) 1280)
-           (add-to-list 'default-frame-alist (cons 'width 190))
-           (add-to-list 'default-frame-alist (cons 'width 80)))
+       (add-to-list 'default-frame-alist (cons 'width 190))
+       (add-to-list 'default-frame-alist (cons 'width 80)))
     ;; for the height, subtract a couple hundred pixels
     ;; from the screen height (for panels, menubars and
     ;; whatnot), then divide by the height of a char to
     ;; get the height we want
     (add-to-list 'default-frame-alist
-         (cons 'height (/ (- (x-display-pixel-height) 50)
-                             (frame-char-height)))))))
+     (cons 'height (/ (- (x-display-pixel-height) 50)
+                 (frame-char-height)))))))
 
 (defun toggle-fullscreen (&optional f)
   (interactive)
   (let ((current-value (frame-parameter nil 'fullscreen)))
     (set-frame-parameter nil 'fullscreen
-			 (if (equal 'fullboth current-value)
-			     (if (boundp 'old-fullscreen) old-fullscreen nil)
-			   (progn (setq old-fullscreen current-value)
-				  'fullboth)))))
+             (if (equal 'fullboth current-value)
+                 (if (boundp 'old-fullscreen) old-fullscreen nil)
+               (progn (setq old-fullscreen current-value)
+                  'fullboth)))))
 (global-set-key [f11] 'toggle-fullscreen)
 ; Make new frames fullscreen by default. Note: this hook doesn't do
 ; anything to the initial frame if it's in your .emacs, since that file is
@@ -81,7 +80,7 @@
 ;; initiate and setup php-mode
 (require 'php-mode)
 (add-to-list 'auto-mode-alist
-	          '("\\.php[34]?\\'\\|\\.phtml\\'" . php-mode))
+          '("\\.php[34]?\\'\\|\\.phtml\\'" . php-mode))
 (add-to-list 'auto-mode-alist '("\\.module\\'" . php-mode))
 (add-to-list 'auto-mode-alist '("\\.inc\\'" . php-mode))
 
@@ -105,6 +104,13 @@
 
 ;; nxml identation
 (setq nxml-child-indent 4)
+
+;;Whitespace mode
+(require 'whitespace)
+(add-hook 'before-save-hook 'whitespace-cleanup)
+(setq whitespace-style
+  '(face trailing tabs empty indentation space-after-tab space-before-tab))
+(global-whitespace-mode)
 
 ;; miscelaneous tweaks
 (set-default 'truncate-lines t)
@@ -187,7 +193,10 @@
 
 (require 'column-marker)
 (add-hook 'php-mode-hook (lambda() (interactive) (column-marker-2 80)))
-(add-hook 'python-mode-hook (lambda() (interactive) (column-marker-3 80)))
+(add-hook 'python-mode-hook (lambda()
+                              (interactive)
+                              (column-marker-1 80)
+                              ))
 
 (require 'highlight-indentation)
 (add-hook 'python-mode-hook 'highlight-indentation)
@@ -201,22 +210,22 @@
 
 ;; Mumamo is making emacs 23.3 freak out:
 (when (and (equal emacs-major-version 23)
-           (equal emacs-minor-version 3))
+       (equal emacs-minor-version 3))
   (eval-after-load "bytecomp"
     '(add-to-list 'byte-compile-not-obsolete-vars
-                  'font-lock-beginning-of-syntax-function))
+          'font-lock-beginning-of-syntax-function))
   ;; tramp-compat.el clobbers this variable!
   (eval-after-load "tramp-compat"
     '(add-to-list 'byte-compile-not-obsolete-vars
-                  'font-lock-beginning-of-syntax-function)))
+          'font-lock-beginning-of-syntax-function)))
 
 (load-file (concat modules-path "pycoverage.el/pycov2.el"))
 (require 'linum)
 (require 'pycov2)
 (add-hook 'python-mode-hook
-	  (function (lambda ()
-		      (pycov2-mode)
-		      (linum-mode))))
+      (function (lambda ()
+              (pycov2-mode)
+              (linum-mode))))
 
 ;; Setup pony mode
 ;; (add-to-list 'load-path (concat modules-path "pony-mode/src"))
@@ -236,7 +245,9 @@
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
  '(ispell-highlight-p t)
-)
+ '(safe-local-variable-values (quote ((python-shell-completion-string-code . "';'.join(get_ipython().Completer.all_completions('''%s'''))
+") (python-shell-completion-module-string-code . "';'.join(module_completion('''%s'''))
+") (python-shell-interpreter-args . "/home/venya/projects/socaial-network-apps/SocialVacancy/hhsocialvacancy/manage.py shell") (python-shell-completion-string-code . "';'.join(get_ipython().Completer.all_completions('''%s'''))") (python-shell-completion-module-string-code . "';'.join(module_completion('''%s'''))") (python-shell-completion-setup-code . "from IPython.core.completerlib import module_completion") (python-shell-interpreter-args . "/home/venya/projects/career-fair/hhcareeffair/manage.py shell") (python-shell-interpreter . "python")))))
 (custom-set-faces
   ;; custom-set-faces was added by Custom.
   ;; If you edit it by hand, you could mess it up, so be careful.
