@@ -3,6 +3,8 @@
 
 (setq mc/cmds-to-run-for-all
       '(
+	beginning-of-buffer
+	clipboard-yank
 	comint-previous-input
 	delete-horizontal-space
 	down-list
@@ -23,10 +25,13 @@
 (setq mc/cmds-to-run-once
       '(
 	end-of-buffer
+	ido-find-file
 	ido-insert-file
 	ido-switch-buffer
+	magit-status
 	mark-page
 	mark-sexp
 	mouse-save-then-kill
 	nosetests-all
+	view-emacs-news
 	))
