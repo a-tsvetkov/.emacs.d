@@ -131,7 +131,7 @@
 ;; load magithub
 (add-to-list 'load-path (concat modules-path "magihub"))
 (require 'magithub)
-(global-set-key (kbd "C-x C-g") 'magit-status)
+(global-set-key (kbd "C-x g") 'magit-status)
 
 (add-to-list 'load-path (concat modules-path "multiple-cursors.el"))
 ;; Multiple cursors configuration
