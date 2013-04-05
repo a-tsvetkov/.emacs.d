@@ -5,6 +5,12 @@
 (setq current-path (file-name-directory load-file-name))
 (setq modules-path (file-name-as-directory (concat current-path "modules")))
 
+(require 'package)
+(package-initialize)
+;; Add MELPA package archive
+(add-to-list 'package-archives
+  '("melpa" . "http://melpa.milkbox.net/packages/") t)
+
 ;; font configuration
 (set-face-attribute 'default nil :family "DejaVu Sans Mono" :height 100)
 
@@ -17,7 +23,6 @@
 
 ;; unused lines
 (setq indicate-empty-lines t)
-
 
 (add-to-list 'load-path modules-path)
 (let ((default-directory modules-path))
@@ -153,25 +158,18 @@
 ;; load pg
 (require 'pg)
 
-;; load color themes
-(require 'color-theme)
-(require 'color-theme-solarized)
-(eval-after-load "color-theme-solarized"
-  '(progn
-     (color-theme-initialize)
-     (color-theme-solarized-dark)))
-
 ;; linum teaks
 (require 'linum-off)
 (add-hook 'linum-before-numbering-hook (lambda() (setq linum-format (lambda (line) (propertize (format (let ((w (length (number-to-string (count-lines (point-min) (point-max)))))) (concat " %" (number-to-string w) "d ")) line) 'face 'linum)))))
 
 (require 'tramp)
 
+
 (load-file (concat modules-path "emacs-for-python/epy-init.el"))
 
 (require 'epy-setup)      ;; It will setup other loads, it is required!
 (require 'epy-python)     ;; If you want the python facilities [optional]
-(require 'epy-completion) ;; If you want the autocompletion settings [optional]
+;;(require 'epy-completion) ;; If you want the autocompletion settings [optional]
 (require 'epy-editing)    ;; For configurations related to editing [optional]
 (require 'epy-bindings)   ;; For my suggested keybindings [optional]
 (require 'epy-nose)       ;; For nose integration
@@ -179,24 +177,32 @@
 (require 'python-pep8)
 (require 'python-pylint)
 
-;; (epy-setup-checker "pyflakes %f")
-;; Uncomment to check with multiple checkers
-(epy-setup-checker (concat "python " modules-path "pycheckers.py %f"))
+;; Python completion with jedi
+(setq jedi:setup-keys t)
+(autoload 'jedi:setup "jedi" nil t)
 
+(require 'flycheck)
+(add-hook 'after-init-hook #'global-flycheck-mode)
+(setq-default flycheck-flake8-maximum-line-length 120)
+(setq-default flycheck-highlighting-mode "lines")
 
+(global-set-key (kbd "RET") 'newline-and-indent)
+
+(require 'column-marker)
+(add-hook 'php-mode-hook (lambda() (interactive) (column-marker-2 80)))
+(add-hook 'python-mode-hook
+          (lambda()
+            (jedi:setup)
+            (column-marker-1 80)
+            (flycheck-select-checker python-flake8)
+            )
+          )
 (epy-django-snippets)
 (epy-setup-ipython)
 
 ;; autopair mode
 (require 'autopair)
 ;; (autopair-global-mode)
-
-(require 'column-marker)
-(add-hook 'php-mode-hook (lambda() (interactive) (column-marker-2 80)))
-(add-hook 'python-mode-hook (lambda()
-                              (interactive)
-                              (column-marker-1 80)
-                              ))
 
 (require 'highlight-indentation)
 (add-hook 'python-mode-hook 'highlight-indentation)
@@ -240,17 +246,21 @@
 ;; (add-hook 'python-mode-hook 'flyspell-prog-mode)
 
 (custom-set-variables
-  ;; custom-set-variables was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
- '(ispell-highlight-p t)
- '(safe-local-variable-values (quote ((python-shell-completion-string-code . "';'.join(get_ipython().Completer.all_completions('''%s'''))
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(custom-safe-themes (quote ("8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default)))
+ '(safe-local-variable-values (quote ((python-shell-interpreter-args . "/home/venya/projects/hrbrand-v2012/manage.py shell") (python-shell-interpreter . "ipython") (python-shell-completion-string-code . "';'.join(get_ipython().Completer.all_completions('''%s'''))
 ") (python-shell-completion-module-string-code . "';'.join(module_completion('''%s'''))
 ") (python-shell-interpreter-args . "/home/venya/projects/socaial-network-apps/SocialVacancy/hhsocialvacancy/manage.py shell") (python-shell-completion-string-code . "';'.join(get_ipython().Completer.all_completions('''%s'''))") (python-shell-completion-module-string-code . "';'.join(module_completion('''%s'''))") (python-shell-completion-setup-code . "from IPython.core.completerlib import module_completion") (python-shell-interpreter-args . "/home/venya/projects/career-fair/hhcareeffair/manage.py shell") (python-shell-interpreter . "python")))))
 (custom-set-faces
-  ;; custom-set-faces was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
  )
+(put 'downcase-region 'disabled nil)
+(put 'upcase-region 'disabled nil)
+
+(load-theme 'solarized-dark)
