@@ -133,9 +133,6 @@
 (add-to-list 'load-path (concat modules-path "mo-git-blame"))
 (autoload 'mo-git-blame-file "mo-git-blame" nil t)
 (autoload 'mo-git-blame-current "mo-git-blame" nil t)
-;; load magithub
-(add-to-list 'load-path (concat modules-path "magihub"))
-(require 'magithub)
 (global-set-key (kbd "C-x g") 'magit-status)
 
 (add-to-list 'load-path (concat modules-path "multiple-cursors.el"))

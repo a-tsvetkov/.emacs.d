@@ -11,3 +11,5 @@ ac-comphist.dat
 eproject.lst
 #*
 *.log
+/elpa/*
+/ido.last

@@ -45,7 +45,6 @@ default_ignore_codes = ['E501']
 ## End of customization ##
 
 import os
-from os import path
 import re
 import sys
 
@@ -56,7 +55,7 @@ class LintRunner(object):
     """Base class provides common functionality to run python code checkers."""
 
     output_format = ("%(level)s %(error_type)s%(error_number)s:"
-                     "%(description)s at %(filename)s line %(line_number)s.")
+                     "%(description)s at %(filename)s line %(line_number)")
 
     output_template = dict.fromkeys(
         ('level', 'error_type', 'error_number', 'description',
@@ -207,14 +206,13 @@ RUNNERS = {
     'pyflakes': PyflakesRunner,
     'pep8': Pep8Runner,
     'pydo': PydoRunner,
-    }
+}
 
 
 if __name__ == '__main__':
     # transparently add a virtualenv to the path when launched with a venv'd
     # python.
-    os.environ['PATH'] = \
-      path.dirname(sys.executable) + ':' + os.environ['PATH']
+    os.environ['PATH'] = xpath.dirname(sys.executable) + ':' + os.environ['PATH']
 
     if len(sys.argv) < 2:
         croak("Usage: %s [file]" % sys.argv[0])
