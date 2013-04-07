@@ -186,12 +186,12 @@
 (global-set-key (kbd "RET") 'newline-and-indent)
 
 ;; All languages:
-(setq skeleton-pair t)
-(global-set-key "(" 'skeleton-pair-insert-maybe)
-(global-set-key "[" 'skeleton-pair-insert-maybe)
-(global-set-key "{" 'skeleton-pair-insert-maybe)
-(global-set-key "\"" 'skeleton-pair-insert-maybe)
-(define-key python-mode-map "'" 'skeleton-pair-insert-maybe)
+;; (setq skeleton-pair t)
+;; (global-set-key "(" 'skeleton-pair-insert-maybe)
+;; (global-set-key "[" 'skeleton-pair-insert-maybe)
+;; (global-set-key "{" 'skeleton-pair-insert-maybe)
+;; (global-set-key "\"" 'skeleton-pair-insert-maybe)
+;; (define-key python-mode-map "'" 'skeleton-pair-insert-maybe)
 
 (require 'column-marker)
 (add-hook 'php-mode-hook (lambda() (interactive) (column-marker-2 80)))
@@ -208,8 +208,16 @@
 
 
 ;; autopair mode
-;; (require 'autopair)
-;; (autopair-global-mode)
+(setq skeleton-pair nil)
+(require 'autopair)
+(autopair-global-mode)
+(setq autopair-autowrap t)
+
+(add-hook 'python-mode-hook
+          #'(lambda ()
+              (setq autopair-handle-action-fns
+                    (list #'autopair-default-handle-action
+                          #'autopair-python-triple-quote-action))))
 
 (require 'highlight-indentation)
 (add-hook 'python-mode-hook 'highlight-indentation)
