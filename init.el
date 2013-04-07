@@ -185,6 +185,14 @@
 
 (global-set-key (kbd "RET") 'newline-and-indent)
 
+;; All languages:
+(setq skeleton-pair t)
+(global-set-key "(" 'skeleton-pair-insert-maybe)
+(global-set-key "[" 'skeleton-pair-insert-maybe)
+(global-set-key "{" 'skeleton-pair-insert-maybe)
+(global-set-key "\"" 'skeleton-pair-insert-maybe)
+(define-key python-mode-map "'" 'skeleton-pair-insert-maybe)
+
 (require 'column-marker)
 (add-hook 'php-mode-hook (lambda() (interactive) (column-marker-2 80)))
 (add-hook 'python-mode-hook
@@ -192,13 +200,15 @@
             (jedi:setup)
             (column-marker-1 80)
             (flycheck-select-checker python-flake8)
+
             )
           )
 (epy-django-snippets)
 (epy-setup-ipython)
 
+
 ;; autopair mode
-(require 'autopair)
+;; (require 'autopair)
 ;; (autopair-global-mode)
 
 (require 'highlight-indentation)
