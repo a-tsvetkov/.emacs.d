@@ -2,43 +2,14 @@
       path = modules/emacs-for-python
       url = git://github.com/gabrielelanaro/emacs-for-python.git
 
-[submodule "emacs-color-theme-solarized"]
-      path = modules/emacs-color-theme-solarized
-      url = git://github.com/sellout/emacs-color-theme-solarized.git
-
-[submodule "expand-region.el"]
-      path = modules/expand-region.el
-      url = git://github.com/magnars/expand-region.el.git
-
-[submodule "magithub"]
-      path = modules/magithub
-      url = https://github.com/nex3/magithub
-
-[submodule "mo-git-blame"]
-      path = modules/mo-git-blame
-      url = git://github.com/mbunkus/mo-git-blame.git
-
-[submodule "multiple-cursors.el"]
-      path = modules/multiple-cursors.el
-      url = git://github.com/magnars/multiple-cursors.el.git
-
-[submodule "pony-mode"]
-      path = modules/pony-mode
-      url = git://github.com/davidmiller/pony-mode.git
-
 [submodule "pycoverage.el"]
       path = modules/pycoverage.el
       url = git://github.com/mattharrison/pycoverage.el.git
 
-[submodule "zenburn-emacs"]
-      path = modules/zenburn-emacs
-      url = git://github.com/bbatsov/zenburn-emacs.git
-[submodule "modules/yasnippet"]
-	path = modules/yasnippet
-	url = git://github.com/capitaomorte/yasnippet.git
 [submodule "modules/nxhtml"]
-	path = modules/nxhtml
-	url = https://github.com/emacsmirror/nxhtml.git
+    path = modules/nxhtml
+    url = https://github.com/emacsmirror/nxhtml.git
+
 [submodule "modules/python-django.el"]
-	path = modules/python-django.el
-	url = git@github.com:fgallina/python-django.el.git
+    path = modules/python-django.el
+    url = git@github.com:fgallina/python-django.el.git
