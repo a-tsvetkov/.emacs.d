@@ -184,6 +184,7 @@
 (require 'flycheck)
 (add-hook 'after-init-hook #'global-flycheck-mode)
 (setq-default flycheck-flake8-maximum-line-length 120)
+(setq-default flycheck-flake8-maximum-complexity 10)
 (setq-default flycheck-highlighting-mode "lines")
 
 (global-set-key (kbd "RET") 'newline-and-indent)
