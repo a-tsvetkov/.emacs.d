@@ -13,3 +13,5 @@ eproject.lst
 *.log
 /elpa/*
 /ido.last
+/games/snake-scores
+/games/tetris-scores

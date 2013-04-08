@@ -10,6 +10,36 @@
 ;; Add MELPA package archive
 (add-to-list 'package-archives
   '("melpa" . "http://melpa.milkbox.net/packages/") t)
+;; check if the packages is installed; if not, install it.
+(mapc
+ (lambda (package)
+   (or (package-installed-p package)
+       (if (y-or-n-p (format "Package %s is missing. Install it? " package))
+           (package-install package))))
+ '(autopair
+   column-marker
+   expand-region
+   flycheck
+   dash
+   jedi
+   auto-complete
+   epc
+   ctable
+   concurrent
+   deferred
+   js2-mode
+   magit-gh-pulls
+   magit
+   gh
+   logito
+   multiple-cursors
+   pcache
+   php-mode
+   popup
+   s
+   solarized-theme
+   yaml-mode
+   yasnippet))
 
 ;; font configuration
 (set-face-attribute 'default nil :family "DejaVu Sans Mono" :height 100)
@@ -17,9 +47,6 @@
 ;; line and column numbers
 (setq column-number-mode t)
 (setq line-number-mode t)
-
-;; Ненужные пробелы
-;; (setq show-trailing-whitespace t)
 
 ;; unused lines
 (setq indicate-empty-lines t)
@@ -89,17 +116,6 @@
 (add-to-list 'auto-mode-alist '("\\.module\\'" . php-mode))
 (add-to-list 'auto-mode-alist '("\\.inc\\'" . php-mode))
 
-;; (defun wicked/php-mode-init ()
-;;   "Set some buffer-local variables."
-;;   (setq case-fold-search t)
-;;   (c-set-offset 'arglist-cont 0)
-;;   (c-set-offset 'arglist-intro '+)
-;;   (setq show-paren-mode t)
-;;   (c-set-offset 'case-label 4)
-;;   (c-set-offset 'substatement-open 0)
-;;   (c-set-offset 'arglist-close 0))
-;; (add-hook 'php-mode-hook 'wicked/php-mode-init)
-
 ;; fill column
 (setq fill-column 79)
 
@@ -120,12 +136,6 @@
 ;; miscelaneous tweaks
 (set-default 'truncate-lines t)
 (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
-
-
-;; Yasnippet initialize in emacs-for-python
-;; (add-to-list 'load-path (concat modules-path "yasnippet"))
-;; (require 'yasnippet)
-;; (yas-global-mode 1)
 
 ;; load magit
 (require 'magit)
@@ -186,13 +196,6 @@
 
 (global-set-key (kbd "RET") 'newline-and-indent)
 
-;; All languages:
-;; (setq skeleton-pair t)
-;; (global-set-key "(" 'skeleton-pair-insert-maybe)
-;; (global-set-key "[" 'skeleton-pair-insert-maybe)
-;; (global-set-key "{" 'skeleton-pair-insert-maybe)
-;; (global-set-key "\"" 'skeleton-pair-insert-maybe)
-;; (define-key python-mode-map "'" 'skeleton-pair-insert-maybe)
 ;; autopair mode
 (setq skeleton-pair nil)
 (require 'autopair)
@@ -252,10 +255,6 @@
 (require 'linum)
 (require 'pycov2)
 
-;; Setup pony mode
-;; (add-to-list 'load-path (concat modules-path "pony-mode/src"))
-;; (require 'pony-mode)
-
 (add-to-list 'load-path (concat modules-path "python-django.el"))
 (require 'python-django)
 (global-set-key (kbd "C-x j") 'python-django-open-project)
@@ -270,9 +269,12 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes (quote ("8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default)))
- '(safe-local-variable-values (quote ((python-shell-interpreter-args . "/home/venya/projects/hrbrand-v2012/manage.py shell") (python-shell-interpreter . "ipython") (python-shell-completion-string-code . "';'.join(get_ipython().Completer.all_completions('''%s'''))
-") (python-shell-completion-module-string-code . "';'.join(module_completion('''%s'''))
-") (python-shell-interpreter-args . "/home/venya/projects/socaial-network-apps/SocialVacancy/hhsocialvacancy/manage.py shell") (python-shell-completion-string-code . "';'.join(get_ipython().Completer.all_completions('''%s'''))") (python-shell-completion-module-string-code . "';'.join(module_completion('''%s'''))") (python-shell-completion-setup-code . "from IPython.core.completerlib import module_completion") (python-shell-interpreter-args . "/home/venya/projects/career-fair/hhcareeffair/manage.py shell") (python-shell-interpreter . "python")))))
+ '(safe-local-variable-values
+   (quote
+    ((python-shell-interpreter-args . "/home/venya/projects/hrbrand-v2012/manage.py shell") (python-shell-interpreter . "ipython") (python-shell-completion-string-code . "';'.join(get_ipython().Completer.all_completions('''%s'''))")
+     (python-shell-completion-module-string-code . "';'.join(module_completion('''%s'''))")
+     (python-shell-interpreter-args . "/home/venya/projects/socaial-network-apps/SocialVacancy/hhsocialvacancy/manage.py shell") (python-shell-completion-string-code . "';'.join(get_ipython().Completer.all_completions('''%s'''))") (python-shell-completion-module-string-code . "';'.join(module_completion('''%s'''))") (python-shell-completion-setup-code . "from IPython.core.completerlib import module_completion") (python-shell-interpreter-args . "/home/venya/projects/career-fair/hhcareeffair/manage.py shell")
+     (python-shell-interpreter . "python")))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
