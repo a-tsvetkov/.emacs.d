@@ -218,6 +218,7 @@
             (local-set-key (kbd "C-c p a") 'nosetests-pdb-all)
             (local-set-key (kbd "C-c p m") 'nosetests-pdb-module)
             (local-set-key (kbd "C-c p .") 'nosetests-pdb-one)
+            (highlight-indentation)
             (interactive)
             (setq autopair-handle-action-fns
                   (list #'autopair-default-handle-action
@@ -225,7 +226,6 @@
             (jedi:setup)
             (column-marker-1 80)
             (flycheck-select-checker python-flake8)
-            (highlight-indentation)
             (pycov2-mode)
             (linum-mode)
             )
