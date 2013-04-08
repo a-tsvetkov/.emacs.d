@@ -169,7 +169,7 @@
 ;;(require 'epy-completion) ;; If you want the autocompletion settings [optional]
 (require 'epy-editing)    ;; For configurations related to editing [optional]
 (require 'epy-bindings)   ;; For my suggested keybindings [optional]
-(require 'epy-nose)       ;; For nose integration
+;;(require 'epy-nose)       ;; For nose integration
 
 (require 'python-pep8)
 (require 'python-pylint)
@@ -193,36 +193,43 @@
 ;; (global-set-key "{" 'skeleton-pair-insert-maybe)
 ;; (global-set-key "\"" 'skeleton-pair-insert-maybe)
 ;; (define-key python-mode-map "'" 'skeleton-pair-insert-maybe)
-
-(require 'column-marker)
-(add-hook 'php-mode-hook (lambda() (interactive) (column-marker-2 80)))
-(add-hook 'python-mode-hook
-          (lambda()
-            (jedi:setup)
-            (column-marker-1 80)
-            (flycheck-select-checker python-flake8)
-
-            )
-          )
-(epy-django-snippets)
-(epy-setup-ipython)
-
-
 ;; autopair mode
 (setq skeleton-pair nil)
 (require 'autopair)
 (autopair-global-mode)
 (setq autopair-autowrap t)
 
-(add-hook 'python-mode-hook
-          #'(lambda ()
-              (setq autopair-handle-action-fns
-                    (list #'autopair-default-handle-action
-                          #'autopair-python-triple-quote-action))))
 
+(require 'column-marker)
+(epy-django-snippets)
+(epy-setup-ipython)
+
+(require 'nose)
 (require 'highlight-indentation)
-(add-hook 'python-mode-hook 'highlight-indentation)
+
 (set-face-background 'highlight-indent-face "#073642")
+(add-hook 'php-mode-hook (lambda() (interactive) (column-marker-2 80)))
+(add-hook 'python-mode-hook
+          (lambda()
+            (local-set-key (kbd "C-c a") 'nosetests-all)
+            (local-set-key (kbd "C-c M") 'nosetests-module)  ;; C-c m conflicts w/ pylint
+            (local-set-key (kbd "C-c .") 'nosetests-one)
+            (local-set-key (kbd "C-c x") 'nosetests-stop)
+            (local-set-key (kbd "C-c p a") 'nosetests-pdb-all)
+            (local-set-key (kbd "C-c p m") 'nosetests-pdb-module)
+            (local-set-key (kbd "C-c p .") 'nosetests-pdb-one)
+            (interactive)
+            (setq autopair-handle-action-fns
+                  (list #'autopair-default-handle-action
+                        #'autopair-python-triple-quote-action))
+            (jedi:setup)
+            (column-marker-1 80)
+            (flycheck-select-checker python-flake8)
+            (highlight-indentation)
+            (pycov2-mode)
+            (linum-mode)
+            )
+          )
 
 (autoload 'django-html-mumamo-mode (concat modules-path "nxhtml/autostart.el"))
 (setq auto-mode-alist
@@ -244,10 +251,6 @@
 (load-file (concat modules-path "pycoverage.el/pycov2.el"))
 (require 'linum)
 (require 'pycov2)
-(add-hook 'python-mode-hook
-      (function (lambda ()
-              (pycov2-mode)
-              (linum-mode))))
 
 ;; Setup pony mode
 ;; (add-to-list 'load-path (concat modules-path "pony-mode/src"))
