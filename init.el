@@ -225,7 +225,7 @@
                         #'autopair-python-triple-quote-action))
             (jedi:setup)
             (column-marker-1 80)
-            (flycheck-select-checker python-flake8)
+            (flycheck-select-checker 'python-flake8)
             (pycov2-mode)
             (linum-mode)
             )
