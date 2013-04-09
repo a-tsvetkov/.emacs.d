@@ -10,36 +10,33 @@
 ;; Add MELPA package archive
 (add-to-list 'package-archives
   '("melpa" . "http://melpa.milkbox.net/packages/") t)
+;; fetch the list of packages available
+(package-refresh-contents)
+
 ;; check if the packages is installed; if not, install it.
+(defvar required-packages
+  '(autopair
+    column-marker
+    expand-region
+    flycheck
+    dash
+    jedi
+    auto-complete
+    js2-mode
+    magit
+    multiple-cursors
+    php-mode
+    solarized-theme
+    yaml-mode
+    yasnippet))
+
 (mapc
  (lambda (package)
    (or (package-installed-p package)
        (if (y-or-n-p (format "Package %s is missing. Install it? " package))
            (package-install package))))
- '(autopair
-   column-marker
-   expand-region
-   flycheck
-   dash
-   jedi
-   auto-complete
-   epc
-   ctable
-   concurrent
-   deferred
-   js2-mode
-   magit-gh-pulls
-   magit
-   gh
-   logito
-   multiple-cursors
-   pcache
-   php-mode
-   popup
-   s
-   solarized-theme
-   yaml-mode
-   yasnippet))
+ required-packages)
+
 
 ;; font configuration
 (set-face-attribute 'default nil :family "DejaVu Sans Mono" :height 100)
