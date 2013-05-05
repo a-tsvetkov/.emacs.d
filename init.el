@@ -185,25 +185,6 @@
 (setq jedi:setup-keys t)
 (autoload 'jedi:setup "jedi" nil t)
 
-(require 'flycheck)
-(add-hook 'after-init-hook #'global-flycheck-mode)
-(setq-default flycheck-flake8-maximum-line-length 120)
-(setq-default flycheck-flake8-maximum-complexity 10)
-(setq-default flycheck-highlighting-mode "lines")
-
-(global-set-key (kbd "RET") 'newline-and-indent)
-
-;; autopair mode
-(setq skeleton-pair nil)
-(require 'autopair)
-(autopair-global-mode)
-(setq autopair-autowrap t)
-
-
-(require 'column-marker)
-(epy-django-snippets)
-(epy-setup-ipython)
-
 (require 'nose)
 (require 'highlight-indentation)
 
@@ -230,6 +211,61 @@
             (linum-mode)
             )
           )
+
+;; Scala-mode and ensime
+(require 'scala-mode2)
+
+(add-hook 'scala-mode-hook '(lambda ()
+
+  ;; Alternatively, bind the 'newline-and-indent' command and
+  ;; 'scala-indent:insert-asterisk-on-multiline-comment' to RET in
+  ;; order to get indentation and asterisk-insertion within multi-line
+  ;; comments.
+  (local-set-key (kbd "RET") '(lambda ()
+    (interactive)
+    (newline-and-indent)
+    (scala-indent:insert-asterisk-on-multiline-comment)))
+
+  ;; Bind the backtab (shift tab) to
+  ;; 'scala-indent:indent-with-reluctant-strategy command. This is usefull
+  ;; when using the 'eager' mode by default and you want to "outdent" a
+  ;; code line as a new statement.
+  (local-set-key (kbd "<backtab>") 'scala-indent:indent-with-reluctant-strategy)
+
+  ;; and other bindings here
+  ;; Rely on ENSIME for syntax checking
+  (interactive)
+  (flycheck-mode -1)
+))
+
+;; load the ensime lisp code...
+(add-to-list 'load-path "ENSIME_ROOT/elisp/")
+(require 'ensime)
+
+;; This step causes the ensime-mode to be started whenever
+;; scala-mode is started for a buffer. You may have to customize this step
+;; if you're not using the standard scala mode.
+(add-hook 'scala-mode-hook 'ensime-scala-mode-hook)
+
+(require 'flycheck)
+(add-hook 'after-init-hook #'global-flycheck-mode)
+(setq-default flycheck-flake8-maximum-line-length 120)
+(setq-default flycheck-flake8-maximum-complexity 10)
+(setq-default flycheck-highlighting-mode "lines")
+
+(global-set-key (kbd "RET") 'newline-and-indent)
+
+;; autopair mode
+(setq skeleton-pair nil)
+(require 'autopair)
+(autopair-global-mode)
+(setq autopair-autowrap t)
+
+
+(require 'column-marker)
+(epy-django-snippets)
+(epy-setup-ipython)
+
 
 (autoload 'django-html-mumamo-mode (concat modules-path "nxhtml/autostart.el"))
 (setq auto-mode-alist
@@ -259,6 +295,9 @@
 ;; Comment spell checking
 ;; (setq flyspell-issue-welcome-flag nil)
 ;; (add-hook 'python-mode-hook 'flyspell-prog-mode)
+
+;; js2 mode setup
+(add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.

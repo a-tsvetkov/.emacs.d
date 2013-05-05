@@ -9,8 +9,11 @@
         beginning-of-buffer
         clipboard-yank
         comint-previous-input
+        dabbrev-expand
         delete-horizontal-space
+        delete-indentation
         down-list
+        ignore
         kill-rectangle
         kill-region
         nxml-electric-slash
@@ -27,7 +30,9 @@
 
 (setq mc/cmds-to-run-once
       '(
+        calc-dispatch
         end-of-buffer
+        ensime-mouse-motion
         ido-find-file
         ido-insert-file
         ido-switch-buffer
