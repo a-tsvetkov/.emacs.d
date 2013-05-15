@@ -28,7 +28,8 @@
     php-mode
     solarized-theme
     yaml-mode
-    yasnippet))
+    yasnippet
+    scala-mode2))
 
 (mapc
  (lambda (package)
@@ -86,9 +87,9 @@
                (progn (setq old-fullscreen current-value)
                   'fullboth)))))
 (global-set-key [f11] 'toggle-fullscreen)
-; Make new frames fullscreen by default. Note: this hook doesn't do
-; anything to the initial frame if it's in your .emacs, since that file is
-; read _after_ the initial frame is created.
+;; Make new frames fullscreen by default. Note: this hook doesn't do
+;; anything to the initial frame if it's in your .emacs, since that file is
+;; read _after_ the initial frame is created.
 (add-hook 'after-make-frame-functions 'toggle-fullscreen)
 
 ;; initiate workspace
@@ -251,7 +252,8 @@
 (add-hook 'after-init-hook #'global-flycheck-mode)
 (setq-default flycheck-flake8-maximum-line-length 120)
 (setq-default flycheck-flake8-maximum-complexity 10)
-(setq-default flycheck-highlighting-mode "lines")
+(setq-default flycheck-highlighting-mode 'lines)
+
 
 (global-set-key (kbd "RET") 'newline-and-indent)
 
