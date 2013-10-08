@@ -29,7 +29,9 @@
     solarized-theme
     yaml-mode
     yasnippet
-    scala-mode2))
+    scala-mode2
+    fullscreen-mode
+))
 
 (mapc
  (lambda (package)
@@ -78,24 +80,16 @@
      (cons 'height (/ (- (x-display-pixel-height) 50)
                  (frame-char-height)))))))
 
-(defun toggle-fullscreen (&optional f)
-  (interactive)
-  (let ((current-value (frame-parameter nil 'fullscreen)))
-    (set-frame-parameter nil 'fullscreen
-             (if (equal 'fullboth current-value)
-                 (if (boundp 'old-fullscreen) old-fullscreen nil)
-               (progn (setq old-fullscreen current-value)
-                  'fullboth)))))
-(global-set-key [f11] 'toggle-fullscreen)
+(require 'fullscreen-mode)
 ;; Make new frames fullscreen by default. Note: this hook doesn't do
 ;; anything to the initial frame if it's in your .emacs, since that file is
 ;; read _after_ the initial frame is created.
-(add-hook 'after-make-frame-functions 'toggle-fullscreen)
+(add-hook 'after-make-frame-functions 'fullscreen-mode-fullscreen)
 
 ;; initiate workspace
 (defun init-workspace ()
   (global-linum-mode 1)
-  (toggle-fullscreen)
+  (fullscreen-mode-fullscreen)
   (delete-other-windows)
   (menu-bar-mode 0)
   (split-window-horizontally)
