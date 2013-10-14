@@ -29,7 +29,9 @@
     solarized-theme
     yaml-mode
     yasnippet
-    scala-mode2))
+    scala-mode2
+    fullscreen-mode
+))
 
 (mapc
  (lambda (package)
@@ -78,24 +80,16 @@
      (cons 'height (/ (- (x-display-pixel-height) 50)
                  (frame-char-height)))))))
 
-(defun toggle-fullscreen (&optional f)
-  (interactive)
-  (let ((current-value (frame-parameter nil 'fullscreen)))
-    (set-frame-parameter nil 'fullscreen
-             (if (equal 'fullboth current-value)
-                 (if (boundp 'old-fullscreen) old-fullscreen nil)
-               (progn (setq old-fullscreen current-value)
-                  'fullboth)))))
-(global-set-key [f11] 'toggle-fullscreen)
+(require 'fullscreen-mode)
 ;; Make new frames fullscreen by default. Note: this hook doesn't do
 ;; anything to the initial frame if it's in your .emacs, since that file is
 ;; read _after_ the initial frame is created.
-(add-hook 'after-make-frame-functions 'toggle-fullscreen)
+(add-hook 'after-make-frame-functions 'fullscreen-mode-fullscreen)
 
 ;; initiate workspace
 (defun init-workspace ()
   (global-linum-mode 1)
-  (toggle-fullscreen)
+  (fullscreen-mode-fullscreen)
   (delete-other-windows)
   (menu-bar-mode 0)
   (split-window-horizontally)
@@ -250,6 +244,40 @@
 (add-hook 'scala-mode-hook 'ensime-scala-mode-hook)
 
 (require 'flycheck)
+;; Fix to dispay pep8 error as warnings and pyflakes errors as errors
+(flycheck-declare-checker python-flake8
+  "A Python syntax and style checker using Flake8.
+
+For best error reporting, use Flake8 2.0 or newer.
+
+See URL `http://pypi.python.org/pypi/flake8'."
+  :command '("flake8"
+             (config-file "--config" flycheck-flake8rc)
+             (option "--max-complexity"
+                     flycheck-flake8-maximum-complexity
+                     flycheck-option-int)
+             (option "--max-line-length"
+                     flycheck-flake8-maximum-line-length
+                     flycheck-option-int)
+             source-inplace)
+  :error-patterns
+  '(("^\\(?1:.*?\\):\\(?2:[0-9]+\\):\\(?:\\(?3:[0-9]+\\):\\)? \\(?4:E[0-8][0-9]+.*\\)$"
+     warning)                           ; PEP8 Coding style errors
+    ("^\\(?1:.*?\\):\\(?2:[0-9]+\\):\\(?:\\(?3:[0-9]+\\):\\)? \\(?4:E9[0-9]+.*\\)$"
+     error)                             ; PEP8 SyntaxError and IOError
+    ("^\\(?1:.*?\\):\\(?2:[0-9]+\\):\\(?:\\(?3:[0-9]+\\):\\)? \\(?4:F[0-9]+.*\\)$"
+     error)                             ; Flake8 >= 2.0
+    ("^\\(?1:.*?\\):\\(?2:[0-9]+\\):\\(?:\\(?3:[0-9]+\\):\\)? \\(?4:W[0-9]+.*\\)$"
+     warning)                           ; Flake8 < 2.0
+    ("^\\(?1:.*?\\):\\(?2:[0-9]+\\):\\(?:\\(?3:[0-9]+\\):\\)? \\(?4:C[0-9]+.*\\)$"
+     warning)                           ; McCabe complexity in Flake8 > 2.0
+    ("^\\(?1:.*?\\):\\(?2:[0-9]+\\):\\(?:\\(?3:[0-9]+\\):\\)? \\(?4:N[0-9]+.*\\)$"
+     warning)                           ; pep8-naming Flake8 plugin.
+    ;; Syntax errors in Flake8 < 2.0, in Flake8 >= 2.0 syntax errors are caught
+    ;; by the E.* pattern above
+    ("^\\(?1:.*\\):\\(?2:[0-9]+\\): \\(?4:.*\\)$" error))
+  :modes 'python-mode)
+
 (add-hook 'after-init-hook #'global-flycheck-mode)
 (setq-default flycheck-flake8-maximum-line-length 120)
 (setq-default flycheck-flake8-maximum-complexity 10)
@@ -310,12 +338,9 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes (quote ("8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default)))
- '(safe-local-variable-values
-   (quote
-    ((python-shell-interpreter-args . "/home/venya/projects/hrbrand-v2012/manage.py shell") (python-shell-interpreter . "ipython") (python-shell-completion-string-code . "';'.join(get_ipython().Completer.all_completions('''%s'''))")
-     (python-shell-completion-module-string-code . "';'.join(module_completion('''%s'''))")
-     (python-shell-interpreter-args . "/home/venya/projects/socaial-network-apps/SocialVacancy/hhsocialvacancy/manage.py shell") (python-shell-completion-string-code . "';'.join(get_ipython().Completer.all_completions('''%s'''))") (python-shell-completion-module-string-code . "';'.join(module_completion('''%s'''))") (python-shell-completion-setup-code . "from IPython.core.completerlib import module_completion") (python-shell-interpreter-args . "/home/venya/projects/career-fair/hhcareeffair/manage.py shell")
-     (python-shell-interpreter . "python")))))
+ '(safe-local-variable-values (quote ((encoding . utf-8) (python-shell-completion-string-code . "';'.join(get_ipython().Completer.all_completions('''%s'''))
+") (python-shell-completion-module-string-code . "';'.join(module_completion('''%s'''))
+") (python-shell-interpreter-args . "/home/venya/projects/hrbrand-v2012/manage.py shell") (python-shell-interpreter . "ipython") (python-shell-completion-string-code . "';'.join(get_ipython().Completer.all_completions('''%s'''))") (python-shell-completion-module-string-code . "';'.join(module_completion('''%s'''))") (python-shell-interpreter-args . "/home/venya/projects/socaial-network-apps/SocialVacancy/hhsocialvacancy/manage.py shell") (python-shell-completion-string-code . "';'.join(get_ipython().Completer.all_completions('''%s'''))") (python-shell-completion-module-string-code . "';'.join(module_completion('''%s'''))") (python-shell-completion-setup-code . "from IPython.core.completerlib import module_completion") (python-shell-interpreter-args . "/home/venya/projects/career-fair/hhcareeffair/manage.py shell") (python-shell-interpreter . "python")))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -324,5 +349,13 @@
  )
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region 'disabled nil)
+
+;; Workaround the annoying warnings:
+;;    Warning (mumamo-per-buffer-local-vars):
+;;    Already 'permanent-local t: buffer-file-name
+(when (equal emacs-major-version 24)
+  (eval-after-load "mumamo"
+    '(setq mumamo-per-buffer-local-vars
+           (delq 'buffer-file-name mumamo-per-buffer-local-vars))))
 
 (load-theme 'solarized-dark)
