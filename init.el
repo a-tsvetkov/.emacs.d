@@ -129,7 +129,6 @@
 (add-hook 'before-save-hook 'whitespace-cleanup)
 (setq whitespace-style
   '(face trailing tabs empty indentation space-after-tab space-before-tab))
-(global-whitespace-mode)
 
 ;; miscelaneous tweaks
 (set-default 'truncate-lines t)
@@ -202,6 +201,7 @@
             (local-set-key (kbd "C-c p .") 'nosetests-pdb-one)
             (highlight-indentation)
             (interactive)
+            (whitespace-mode t)
             (setq autopair-handle-action-fns
                   (list #'autopair-default-handle-action
                         #'autopair-python-triple-quote-action))
@@ -236,6 +236,7 @@
   ;; and other bindings here
   ;; Rely on ENSIME for syntax checking
   (interactive)
+  (whitespace-mode t)
   (flycheck-mode -1)
 ))
 
@@ -269,22 +270,24 @@
 (epy-setup-ipython)
 
 
-(autoload 'django-html-mumamo-mode (concat modules-path "nxhtml/autostart.el"))
-(setq auto-mode-alist
-      (append '(("\\.html?$" . django-html-mumamo-mode)) auto-mode-alist))
-(setq mumamo-background-colors nil)
-(add-to-list 'auto-mode-alist '("\\.html$" . django-html-mumamo-mode))
 
-;; Mumamo is making emacs 23.3 freak out:
-(when (and (equal emacs-major-version 23)
-       (equal emacs-minor-version 3))
-  (eval-after-load "bytecomp"
-    '(add-to-list 'byte-compile-not-obsolete-vars
-          'font-lock-beginning-of-syntax-function))
-  ;; tramp-compat.el clobbers this variable!
-  (eval-after-load "tramp-compat"
-    '(add-to-list 'byte-compile-not-obsolete-vars
-          'font-lock-beginning-of-syntax-function)))
+(require 'web-mode)
+(add-to-list 'auto-mode-alist '("\\.html\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.jsp\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.as[cp]x\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.erb\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.mustache\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
+
+(setq web-mode-markup-indent-offset 4)
+(setq web-mode-css-indent-offset 4)
+(setq web-mode-code-indent-offset 4)
+
+(setq web-mode-engines-alist
+'(("django" . "\\.html\\'")
+  ("razor"     . "\\.scala\\.html\\'")))
 
 (load-file (concat modules-path "pycoverage.el/pycov2.el"))
 (require 'linum)
