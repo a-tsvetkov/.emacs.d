@@ -31,6 +31,7 @@
     yasnippet
     scala-mode2
     fullscreen-mode
+    web-mode
 ))
 
 (mapc
@@ -155,14 +156,11 @@
 
 ;; load pg
 (require 'pg)
-
 ;; linum teaks
 (require 'linum-off)
 (add-hook 'linum-before-numbering-hook (lambda() (setq linum-format (lambda (line) (propertize (format (let ((w (length (number-to-string (count-lines (point-min) (point-max)))))) (concat " %" (number-to-string w) "d ")) line) 'face 'linum)))))
 
 (require 'tramp)
-
-
 (load-file (concat modules-path "emacs-for-python/epy-init.el"))
 
 (require 'epy-setup)      ;; It will setup other loads, it is required!
@@ -245,38 +243,38 @@
 
 (require 'flycheck)
 ;; Fix to dispay pep8 error as warnings and pyflakes errors as errors
-(flycheck-declare-checker python-flake8
-  "A Python syntax and style checker using Flake8.
+;; (flycheck-define-checker python-flake8
+;;   "A Python syntax and style checker using Flake8.
 
-For best error reporting, use Flake8 2.0 or newer.
+;; For best error reporting, use Flake8 2.0 or newer.
 
-See URL `http://pypi.python.org/pypi/flake8'."
-  :command '("flake8"
-             (config-file "--config" flycheck-flake8rc)
-             (option "--max-complexity"
-                     flycheck-flake8-maximum-complexity
-                     flycheck-option-int)
-             (option "--max-line-length"
-                     flycheck-flake8-maximum-line-length
-                     flycheck-option-int)
-             source-inplace)
-  :error-patterns
-  '(("^\\(?1:.*?\\):\\(?2:[0-9]+\\):\\(?:\\(?3:[0-9]+\\):\\)? \\(?4:E[0-8][0-9]+.*\\)$"
-     warning)                           ; PEP8 Coding style errors
-    ("^\\(?1:.*?\\):\\(?2:[0-9]+\\):\\(?:\\(?3:[0-9]+\\):\\)? \\(?4:E9[0-9]+.*\\)$"
-     error)                             ; PEP8 SyntaxError and IOError
-    ("^\\(?1:.*?\\):\\(?2:[0-9]+\\):\\(?:\\(?3:[0-9]+\\):\\)? \\(?4:F[0-9]+.*\\)$"
-     error)                             ; Flake8 >= 2.0
-    ("^\\(?1:.*?\\):\\(?2:[0-9]+\\):\\(?:\\(?3:[0-9]+\\):\\)? \\(?4:W[0-9]+.*\\)$"
-     warning)                           ; Flake8 < 2.0
-    ("^\\(?1:.*?\\):\\(?2:[0-9]+\\):\\(?:\\(?3:[0-9]+\\):\\)? \\(?4:C[0-9]+.*\\)$"
-     warning)                           ; McCabe complexity in Flake8 > 2.0
-    ("^\\(?1:.*?\\):\\(?2:[0-9]+\\):\\(?:\\(?3:[0-9]+\\):\\)? \\(?4:N[0-9]+.*\\)$"
-     warning)                           ; pep8-naming Flake8 plugin.
-    ;; Syntax errors in Flake8 < 2.0, in Flake8 >= 2.0 syntax errors are caught
-    ;; by the E.* pattern above
-    ("^\\(?1:.*\\):\\(?2:[0-9]+\\): \\(?4:.*\\)$" error))
-  :modes 'python-mode)
+;; See URL `http://pypi.python.org/pypi/flake8'."
+;;   :command ("flake8"
+;;              (config-file "--config" flycheck-flake8rc)
+;;              (option "--max-complexity"
+;;                      flycheck-flake8-maximum-complexity
+;;                      flycheck-option-int)
+;;              (option "--max-line-length"
+;;                      flycheck-flake8-maximum-line-length
+;;                      flycheck-option-int)
+;;              source-inplace)
+;;   :error-patterns
+;;   '(("^\\(?1:.*?\\):\\(?2:[0-9]+\\):\\(?:\\(?3:[0-9]+\\):\\)? \\(?4:E[0-8][0-9]+.*\\)$"
+;;      warning)                           ; PEP8 Coding style errors
+;;     ("^\\(?1:.*?\\):\\(?2:[0-9]+\\):\\(?:\\(?3:[0-9]+\\):\\)? \\(?4:E9[0-9]+.*\\)$"
+;;      error)                             ; PEP8 SyntaxError and IOError
+;;     ("^\\(?1:.*?\\):\\(?2:[0-9]+\\):\\(?:\\(?3:[0-9]+\\):\\)? \\(?4:F[0-9]+.*\\)$"
+;;      error)                             ; Flake8 >= 2.0
+;;     ("^\\(?1:.*?\\):\\(?2:[0-9]+\\):\\(?:\\(?3:[0-9]+\\):\\)? \\(?4:W[0-9]+.*\\)$"
+;;      warning)                           ; Flake8 < 2.0
+;;     ("^\\(?1:.*?\\):\\(?2:[0-9]+\\):\\(?:\\(?3:[0-9]+\\):\\)? \\(?4:C[0-9]+.*\\)$"
+;;      warning)                           ; McCabe complexity in Flake8 > 2.0
+;;     ("^\\(?1:.*?\\):\\(?2:[0-9]+\\):\\(?:\\(?3:[0-9]+\\):\\)? \\(?4:N[0-9]+.*\\)$"
+;;      warning)                           ; pep8-naming Flake8 plugin.
+;;     ;; Syntax errors in Flake8 < 2.0, in Flake8 >= 2.0 syntax errors are caught
+;;     ;; by the E.* pattern above
+;;     ("^\\(?1:.*\\):\\(?2:[0-9]+\\): \\(?4:.*\\)$" error))
+;;   :modes 'python-mode)
 
 (add-hook 'after-init-hook #'global-flycheck-mode)
 (setq-default flycheck-flake8-maximum-line-length 120)
