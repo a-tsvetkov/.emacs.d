@@ -32,6 +32,7 @@
     scala-mode2
     fullscreen-mode
     web-mode
+    coffee-mode
 ))
 
 (mapc
@@ -299,6 +300,7 @@
 
 (require 'web-mode)
 (add-to-list 'auto-mode-alist '("\\.html\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.hbs\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.jsp\\'" . web-mode))
@@ -313,6 +315,7 @@
 
 (setq web-mode-engines-alist
 '(("django" . "\\.html\\'")
+  ("ctemplate" . "\\.hbs\\'")
   ("razor"     . "\\.scala\\.html\\'")))
 
 (load-file (concat modules-path "pycoverage.el/pycov2.el"))
@@ -329,6 +332,9 @@
 
 ;; js2 mode setup
 (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
+
+(add-to-list 'load-path (concat modules-path "ac-coffee"))
+(require 'ac-coffee)
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
