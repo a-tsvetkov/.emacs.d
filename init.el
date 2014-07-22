@@ -6,10 +6,11 @@
 (setq modules-path (file-name-as-directory (concat current-path "modules")))
 
 (require 'package)
-(package-initialize)
+(add-to-list 'package-archives '("elpy" . "http://jorgenschaefer.github.io/packages/"))
 ;; Add MELPA package archive
 (add-to-list 'package-archives
   '("melpa" . "http://melpa.milkbox.net/packages/") t)
+(package-initialize)
 ;; fetch the list of packages available
 (package-refresh-contents)
 
@@ -33,6 +34,8 @@
     fullscreen-mode
     web-mode
     coffee-mode
+    pony-mode
+    elpy
 ))
 
 (mapc
@@ -44,7 +47,7 @@
 
 
 ;; font configuration
-(set-face-attribute 'default nil :family "DejaVu Sans Mono" :height 100)
+(set-face-attribute 'default nil :family "DejaVu Sans Mono" :height 130)
 
 ;; line and column numbers
 (setq column-number-mode t)
@@ -87,6 +90,9 @@
 ;; anything to the initial frame if it's in your .emacs, since that file is
 ;; read _after_ the initial frame is created.
 (add-hook 'after-make-frame-functions 'fullscreen-mode-fullscreen)
+
+(require 'ido)
+(ido-mode t)
 
 ;; initiate workspace
 (defun init-workspace ()
@@ -155,34 +161,34 @@
 (global-set-key (kbd "C-=") 'er/expand-region)
 (global-set-key (kbd "C--") 'er/contract-region)
 
-;; load pg
-(require 'pg)
 ;; linum teaks
 (require 'linum-off)
 (add-hook 'linum-before-numbering-hook (lambda() (setq linum-format (lambda (line) (propertize (format (let ((w (length (number-to-string (count-lines (point-min) (point-max)))))) (concat " %" (number-to-string w) "d ")) line) 'face 'linum)))))
 
 (require 'tramp)
-(load-file (concat modules-path "emacs-for-python/epy-init.el"))
+;; (load-file (concat modules-path "emacs-for-python/epy-init.el"))
 
-(require 'epy-setup)      ;; It will setup other loads, it is required!
-(require 'epy-python)     ;; If you want the python facilities [optional]
-;;(require 'epy-completion) ;; If you want the autocompletion settings [optional]
-(require 'epy-editing)    ;; For configurations related to editing [optional]
-(require 'epy-bindings)   ;; For my suggested keybindings [optional]
-;;(require 'epy-nose)       ;; For nose integration
+(require 'yasnippet)
 
-(require 'python-pep8)
-(require 'python-pylint)
+;; Enable elpy
+(elpy-enable)
+(setq elpy-rpc-backend "jedi")
+; Fixing a key binding bug in elpy
+(define-key yas-minor-mode-map (kbd "C-c k") 'yas-expand)
+(define-key yas-minor-mode-map (kbd "C-c C-i") 'yas-insert-snippet)
 
-;; Python completion with jedi
-(setq jedi:setup-keys t)
-(autoload 'jedi:setup "jedi" nil t)
+;; Shorter virtualenv switch
+(defalias 'workon 'pyvenv-workon)
+;; Make autocomplete a little bit faster
+(setq ac-sources
+      (delq 'ac-source-nropemacs-dot
+            (delq 'ac-source-nropemacs
+                  ac-sources)))
 
 (require 'nose)
-(require 'highlight-indentation)
-
-(set-face-background 'highlight-indent-face "#073642")
+;; Setup PHP mode ih gosh
 (add-hook 'php-mode-hook (lambda() (interactive) (column-marker-2 80)))
+;; Setup python mode
 (add-hook 'python-mode-hook
           (lambda()
             (local-set-key (kbd "C-c a") 'nosetests-all)
@@ -192,16 +198,15 @@
             (local-set-key (kbd "C-c p a") 'nosetests-pdb-all)
             (local-set-key (kbd "C-c p m") 'nosetests-pdb-module)
             (local-set-key (kbd "C-c p .") 'nosetests-pdb-one)
-            (highlight-indentation)
+            (elpy-mode)
+            (elpy-use-ipython)
             (interactive)
             (whitespace-mode t)
             (setq autopair-handle-action-fns
                   (list #'autopair-default-handle-action
                         #'autopair-python-triple-quote-action))
-            (jedi:setup)
-            (column-marker-1 80)
-            (flycheck-select-checker 'python-flake8)
-            (pycov2-mode)
+             (column-marker-1 80)
+             (pycov2-mode)
             (linum-mode)
             )
           )
@@ -242,45 +247,10 @@
 ;; if you're not using the standard scala mode.
 (add-hook 'scala-mode-hook 'ensime-scala-mode-hook)
 
-(require 'flycheck)
-;; Fix to dispay pep8 error as warnings and pyflakes errors as errors
-;; (flycheck-define-checker python-flake8
-;;   "A Python syntax and style checker using Flake8.
-
-;; For best error reporting, use Flake8 2.0 or newer.
-
-;; See URL `http://pypi.python.org/pypi/flake8'."
-;;   :command ("flake8"
-;;              (config-file "--config" flycheck-flake8rc)
-;;              (option "--max-complexity"
-;;                      flycheck-flake8-maximum-complexity
-;;                      flycheck-option-int)
-;;              (option "--max-line-length"
-;;                      flycheck-flake8-maximum-line-length
-;;                      flycheck-option-int)
-;;              source-inplace)
-;;   :error-patterns
-;;   '(("^\\(?1:.*?\\):\\(?2:[0-9]+\\):\\(?:\\(?3:[0-9]+\\):\\)? \\(?4:E[0-8][0-9]+.*\\)$"
-;;      warning)                           ; PEP8 Coding style errors
-;;     ("^\\(?1:.*?\\):\\(?2:[0-9]+\\):\\(?:\\(?3:[0-9]+\\):\\)? \\(?4:E9[0-9]+.*\\)$"
-;;      error)                             ; PEP8 SyntaxError and IOError
-;;     ("^\\(?1:.*?\\):\\(?2:[0-9]+\\):\\(?:\\(?3:[0-9]+\\):\\)? \\(?4:F[0-9]+.*\\)$"
-;;      error)                             ; Flake8 >= 2.0
-;;     ("^\\(?1:.*?\\):\\(?2:[0-9]+\\):\\(?:\\(?3:[0-9]+\\):\\)? \\(?4:W[0-9]+.*\\)$"
-;;      warning)                           ; Flake8 < 2.0
-;;     ("^\\(?1:.*?\\):\\(?2:[0-9]+\\):\\(?:\\(?3:[0-9]+\\):\\)? \\(?4:C[0-9]+.*\\)$"
-;;      warning)                           ; McCabe complexity in Flake8 > 2.0
-;;     ("^\\(?1:.*?\\):\\(?2:[0-9]+\\):\\(?:\\(?3:[0-9]+\\):\\)? \\(?4:N[0-9]+.*\\)$"
-;;      warning)                           ; pep8-naming Flake8 plugin.
-;;     ;; Syntax errors in Flake8 < 2.0, in Flake8 >= 2.0 syntax errors are caught
-;;     ;; by the E.* pattern above
-;;     ("^\\(?1:.*\\):\\(?2:[0-9]+\\): \\(?4:.*\\)$" error))
-;;   :modes 'python-mode)
-
 (add-hook 'after-init-hook #'global-flycheck-mode)
 (setq-default flycheck-flake8-maximum-line-length 120)
 (setq-default flycheck-flake8-maximum-complexity 10)
-(setq-default flycheck-highlighting-mode 'lines)
+;; (setq-default flycheck-highlighting-mode 'lines)
 
 
 (global-set-key (kbd "RET") 'newline-and-indent)
@@ -293,10 +263,6 @@
 
 
 (require 'column-marker)
-(epy-django-snippets)
-(epy-setup-ipython)
-
-
 
 (require 'web-mode)
 (add-to-list 'auto-mode-alist '("\\.html\\'" . web-mode))
@@ -322,9 +288,7 @@
 (require 'linum)
 (require 'pycov2)
 
-(add-to-list 'load-path (concat modules-path "python-django.el"))
-(require 'python-django)
-(global-set-key (kbd "C-x j") 'python-django-open-project)
+(require 'pony-mode)
 
 ;; Comment spell checking
 ;; (setq flyspell-issue-welcome-flag nil)
@@ -336,15 +300,22 @@
 (add-to-list 'load-path (concat modules-path "ac-coffee"))
 (require 'ac-coffee)
 
+(setq mac-option-key-is-meta nil
+      mac-command-key-is-meta t
+      mac-command-modifier 'meta
+      mac-option-modifier 'none)
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes (quote ("8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default)))
+ '(elpy-rpc-backend "jedi")
  '(safe-local-variable-values (quote ((encoding . utf-8) (python-shell-completion-string-code . "';'.join(get_ipython().Completer.all_completions('''%s'''))
 ") (python-shell-completion-module-string-code . "';'.join(module_completion('''%s'''))
-") (python-shell-interpreter-args . "/home/venya/projects/hrbrand-v2012/manage.py shell") (python-shell-interpreter . "ipython") (python-shell-completion-string-code . "';'.join(get_ipython().Completer.all_completions('''%s'''))") (python-shell-completion-module-string-code . "';'.join(module_completion('''%s'''))") (python-shell-interpreter-args . "/home/venya/projects/socaial-network-apps/SocialVacancy/hhsocialvacancy/manage.py shell") (python-shell-completion-string-code . "';'.join(get_ipython().Completer.all_completions('''%s'''))") (python-shell-completion-module-string-code . "';'.join(module_completion('''%s'''))") (python-shell-completion-setup-code . "from IPython.core.completerlib import module_completion") (python-shell-interpreter-args . "/home/venya/projects/career-fair/hhcareeffair/manage.py shell") (python-shell-interpreter . "python")))))
+") (python-shell-interpreter-args . "/home/venya/projects/hrbrand-v2012/manage.py shell") (python-shell-interpreter . "ipython") (python-shell-completion-string-code . "';'.join(get_ipython().Completer.all_completions('''%s'''))") (python-shell-completion-module-string-code . "';'.join(module_completion('''%s'''))") (python-shell-interpreter-args . "/home/venya/projects/socaial-network-apps/SocialVacancy/hhsocialvacancy/manage.py shell") (python-shell-completion-string-code . "';'.join(get_ipython().Completer.all_completions('''%s'''))") (python-shell-completion-module-string-code . "';'.join(module_completion('''%s'''))") (python-shell-completion-setup-code . "from IPython.core.completerlib import module_completion") (python-shell-interpreter-args . "/home/venya/projects/career-fair/hhcareeffair/manage.py shell") (python-shell-interpreter . "python"))))
+ '(yas-prompt-functions (quote (yas-ido-prompt yas-dropdown-prompt yas-completing-prompt yas-x-prompt yas-no-prompt))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -363,3 +334,6 @@
            (delq 'buffer-file-name mumamo-per-buffer-local-vars))))
 
 (load-theme 'solarized-dark)
+
+(setenv "PATH" (concat "/usr/local/bin:" (getenv "PATH")))
+(setq exec-path (append '("/usr/local/bin") exec-path))
