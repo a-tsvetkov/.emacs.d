@@ -8,13 +8,16 @@
 (require 'package)
 (add-to-list 'package-archives '("elpy" . "http://jorgenschaefer.github.io/packages/"))
 ;; Add MELPA package archive
-(add-to-list 'package-archives
-  '("melpa" . "http://melpa.milkbox.net/packages/") t)
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
+(when (< emacs-major-version 24)
+  ;; For important compatibility libraries like cl-lib
+  (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/")))
+
 (package-initialize)
 ;; fetch the list of packages available
 (package-refresh-contents)
 
-;; check if the packages is installed; if not, install it.
+;; Check if the packages is installed; if not, install it.
 (defvar required-packages
   '(autopair
     column-marker
@@ -36,6 +39,7 @@
     coffee-mode
     pony-mode
     elpy
+    wanderlust
 ))
 
 (mapc
@@ -170,8 +174,14 @@
 
 (require 'yasnippet)
 
+()
 ;; Enable elpy
 (elpy-enable)
+(when (require 'flycheck nil t)
+  (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
+  (add-hook 'elpy-mode-hook 'flycheck-mode))
+(require 'flycheck)
+
 (setq elpy-rpc-backend "jedi")
 ; Fixing a key binding bug in elpy
 (define-key yas-minor-mode-map (kbd "C-c k") 'yas-expand)
@@ -180,10 +190,10 @@
 ;; Shorter virtualenv switch
 (defalias 'workon 'pyvenv-workon)
 ;; Make autocomplete a little bit faster
-(setq ac-sources
-      (delq 'ac-source-nropemacs-dot
-            (delq 'ac-source-nropemacs
-                  ac-sources)))
+;;(setq ac-sources
+;;      (delq 'ac-source-nropemacs-dot
+;;            (delq 'ac-source-nropemacs
+;;                  ac-sources)))
 
 (require 'nose)
 ;; Setup PHP mode ih gosh
@@ -202,6 +212,7 @@
             (elpy-use-ipython)
             (interactive)
             (whitespace-mode t)
+            (company-mode t)
             (setq autopair-handle-action-fns
                   (list #'autopair-default-handle-action
                         #'autopair-python-triple-quote-action))
@@ -289,6 +300,7 @@
 (require 'pycov2)
 
 (require 'pony-mode)
+(setq pony-tests-failfast nil)
 
 ;; Comment spell checking
 ;; (setq flyspell-issue-welcome-flag nil)
@@ -305,23 +317,49 @@
       mac-command-modifier 'meta
       mac-option-modifier 'none)
 
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(custom-safe-themes (quote ("8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default)))
- '(elpy-rpc-backend "jedi")
- '(safe-local-variable-values (quote ((encoding . utf-8) (python-shell-completion-string-code . "';'.join(get_ipython().Completer.all_completions('''%s'''))
-") (python-shell-completion-module-string-code . "';'.join(module_completion('''%s'''))
-") (python-shell-interpreter-args . "/home/venya/projects/hrbrand-v2012/manage.py shell") (python-shell-interpreter . "ipython") (python-shell-completion-string-code . "';'.join(get_ipython().Completer.all_completions('''%s'''))") (python-shell-completion-module-string-code . "';'.join(module_completion('''%s'''))") (python-shell-interpreter-args . "/home/venya/projects/socaial-network-apps/SocialVacancy/hhsocialvacancy/manage.py shell") (python-shell-completion-string-code . "';'.join(get_ipython().Completer.all_completions('''%s'''))") (python-shell-completion-module-string-code . "';'.join(module_completion('''%s'''))") (python-shell-completion-setup-code . "from IPython.core.completerlib import module_completion") (python-shell-interpreter-args . "/home/venya/projects/career-fair/hhcareeffair/manage.py shell") (python-shell-interpreter . "python"))))
- '(yas-prompt-functions (quote (yas-ido-prompt yas-dropdown-prompt yas-completing-prompt yas-x-prompt yas-no-prompt))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
+;; Wanderlust config
+(autoload 'wl "wl" "Wanderlust" t)
+
+;; эта часть настроек для доступа к mail.ru по IMAP
+(setq elmo-imap4-default-server "imap.mail.ru"
+      elmo-imap4-default-user "alexander.tsvetkov@corp.mail.ru"
+      elmo-imap4-default-authenticate-type 'clear
+      elmo-imap4-default-port '993
+      elmo-imap4-default-stream-type 'ssl
+      elmo-imap4-use-modified-utf7 t)
+
+;; тут настройки отвечающие за SMTP
+(setq wl-smtp-connection-type 'starttls
+      wl-smtp-posting-port 465
+      wl-smtp-authenticate-type "plain"
+      wl-smtp-posting-user "alexander.tsvetkov@corp.mail.ru"
+      wl-smtp-posting-server "smtp.mail.ru"
+      wl-local-domain "mail.ru"
+      wl-message-id-domain "smtp.mail.ru")
+
+(setq wl-from "Александр Цветков <alexander.tsvetkov@corp.mail.ru>"
+    ;; настройки папок IMAP
+    ;; если у вас в настройках gmail стоит русский язык то копируйте все как есть
+    ;; gmail создает имена папок в зависимости от локали
+    wl-default-folder "%inbox"
+    wl-draft-folder   "%[corp.mail.ru]/Черновики"
+    wl-trash-folder   "%[corp.mail.ru]/Корзина"
+    wl-fcc            "%[corp.mail.ru]/Отправленные"
+
+    wl-fcc-force-as-read    t
+    wl-default-spec "%")
+
+(setq wl-quicksearch-folder "%inbox")
+
+;; End Wanderlust config
+
+;; MySQL completion
+(require 'sql-completion)
+(setq sql-interactive-mode-hook
+      (lambda ()
+        (define-key sql-interactive-mode-map "\t" 'comint-dynamic-complete)
+        (sql-mysql-completion-init)))
+
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region 'disabled nil)
 
@@ -337,3 +375,20 @@
 
 (setenv "PATH" (concat "/usr/local/bin:" (getenv "PATH")))
 (setq exec-path (append '("/usr/local/bin") exec-path))
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(ac-modes
+   (quote
+    (emacs-lisp-mode lisp-mode lisp-interaction-mode slime-repl-mode nim-mode c-mode cc-mode c++-mode objc-mode swift-mode go-mode java-mode malabar-mode clojure-mode clojurescript-mode scala-mode scheme-mode ocaml-mode tuareg-mode coq-mode haskell-mode agda-mode agda2-mode perl-mode cperl-mode ruby-mode lua-mode tcl-mode ecmascript-mode javascript-mode js-mode fjs-jsx-mode js2-mode js2-jsx-mode coffee-mode php-mode css-mode scss-mode less-css-mode elixir-mode makefile-mode sh-mode fortran-mode f90-mode ada-mode xml-mode sgml-mode web-mode ts-mode sclang-mode verilog-mode qml-mode apples-mode)))
+ '(custom-safe-themes
+   (quote
+    ("8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
